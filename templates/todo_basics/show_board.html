@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Boards</title>
+</head>
+<body>
+    <ul>
+      {% for board in boards %}
+      <li> Борд {{ board.title }} був зроблений {{ board.user }}</li>
+      {% endfor %}
+    </ul>
+</body>
+</html>
