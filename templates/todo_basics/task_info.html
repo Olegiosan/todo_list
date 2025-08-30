@@ -1,10 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Інформація про таск -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">{{ task.title }}</h4>
+    </div>
+    <div class="card-body">
+      <p class="mb-1 text-muted">
+        👤 Створив: <strong>{{ task.created_by }}</strong>
+      </p>
+      <hr>
+      <h5 class="mb-3">📌 Деталі</h5>
+      <p>{{ task.description }}</p>
+      <p>
+        🔄 Призначено: <strong>{{ task.assigned_to }}</strong><br>
+        📅 Дата створення: <strong>{{ task.created_at }}</strong><br>
+        ⏳ Дедлайн: <strong>{{ task.deadline }}</strong>
+      </p>
+    </div>
+    <div class="card-footer text-end">
+      <a class="btn btn-secondary" href="{% url 'board_info' task.status.board.pk %}">⬅ Назад</a>
+    </div>
+  </div>
+
+  <!-- Коментарі -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">💬 Коментарі</h5>
+    </div>
+    <div class="card-body">
+      {% if task.coments.all %}
+        {% for coment in task.coments.all %}
+          <div class="mb-3 border-bottom pb-2">
+            <p class="mb-1"><strong>{{ coment.text }}</strong></p>
+            {% if coment.images.all %}
+              <div class="d-flex flex-wrap gap-2">
+                {% for image in coment.images.all %}
+                  <img src="{{ image.image.url }}" alt="Comment Image"
+                       class="img-thumbnail" style="max-height: 100px;">
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">Поки що немає коментарів.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Форма додавання коментаря -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">➕ Додати коментар</h5>
+    </div>
+    <div class="card-body">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">
+              {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">
+                {{ field.errors }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <div class="mb-3">
+          <label for="id_images" class="form-label">Додати зображення</label>
+          <input type="file" name="images" id="id_images" multiple accept="image/*" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success w-100">✅ Створити</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row text-center">
+    {% for status in board.all_status.all %}
+      <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{{ status.title }}</h5>
+          </div>
+          <div class="card-body">
+            {% for task in status.tasks.all %}
+              <p>
+                <a href="{% url 'task_info' task.pk %}" class="text-decoration-none">
+                  {{ task.title }}
+                </a>
+              </p>
+            {% empty %}
+              <p class="text-muted">Немає тасків</p>
+            {% endfor %}
+          </div>
+          <div class="card-footer">
+            <a class="btn btn-sm btn-outline-primary w-100" href="{% url 'create_task' board.id %}">
+              ➕ Створити таск
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <!-- Колонка для створення нового статусу -->
+    <div class="col-md-3 mb-4">
+      <div class="card border-dashed h-100 d-flex justify-content-center align-items-center">
+        <a class="btn btn-success" href="{% url 'create_status' board.id %}">
+          ➕ Створити статус
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a class="btn btn-secondary" href="{% url 'BoardList' %}">⬅ Назад</a>
+  </div>
+</div>
+{% endblock %}

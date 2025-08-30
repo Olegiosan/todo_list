@@ -1,14 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Boards</title>
-</head>
-<body>
-    <ul>
-      {% for board in boards %}
-      <li> Борд {{ board.title }} був зроблений {{ board.user }}</li>
-      {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="text-center mb-4">📋 Список бордів</h2>
+  <div class="row">
+    {% for board in boards %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body d-flex flex-column justify-content-between">
+            <h5 class="card-title">
+              <a href="{% url 'board_info' board.pk %}" class="text-decoration-none">
+                {{ board.title }}
+              </a>
+            </h5>
+            <p class="card-text text-muted">
+              👤 Створив: {{ board.user }}
+            </p>
+            <a href="{% url 'board_info' board.pk %}" class="btn btn-outline-primary mt-auto">
+              Відкрити борд
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center">
+        <p class="text-muted">Поки що немає бордів.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-4">
+    <a class="btn btn-success" href="{% url 'create_board' %}">➕ Створити новий борд</a>
+  </div>
+</div>
+{% endblock %}
